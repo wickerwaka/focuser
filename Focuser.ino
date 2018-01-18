@@ -1,11 +1,18 @@
 #include <AccelStepper.h>
 
+/***************************
+ Pin Definitions
+ ***************************/
 #define STP 16
 #define DIR 10
 #define MS1 14
 #define MS2 18
 #define EN 15
 
+/***************************
+ We use 1/8 stepping (MS1/MS2 both high)
+ However move resolution is a full step
+ ***************************/
 #define MICROSTEPS 8
 #define MICROSTEP_SHIFT 3
 
@@ -45,6 +52,10 @@ void enable_motor(bool en) {
   
   g_motor_enabled = en;
 }
+
+/***************************
+ Command Handlers
+ ***************************/
 
 unsigned short on_get_position(unsigned short) {
   return (unsigned short)(stepper.currentPosition() >> MICROSTEP_SHIFT);
@@ -125,6 +136,9 @@ const Command g_commands[] = {
   { NULL, TY_NONE,        TY_NONE,        NULL }
 };
 
+/***************************
+ Command Processing
+ ***************************/
 
 void process_command(const char* msg, int msg_size) {
   if (msg_size < 2) {
@@ -200,6 +214,11 @@ void poll_serial() {
     }
   }
 }
+
+
+/***************************
+ Arduino Entry Points
+ ***************************/
 
 void setup() {
   Serial.begin(9600);
